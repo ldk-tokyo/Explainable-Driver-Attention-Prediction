@@ -1,0 +1,26 @@
+.venv/
+utils/eval_utils/meteor/data/
+
+# Training artifacts (太大, 不进 git)
+runs/
+runs_eval/
+runs_smoke/
+ckpts/
+weights/
+dataset/
+
+# Generated reports (re-generatable)
+reports/
+figures/
+vis_output/
+
+# Python
+__pycache__/
+*.pyc
+
+# Claude Code 备份
+.claude_backup_*/
+
+# 临时
+/tmp/launch_eval*
+*.crashed-*
