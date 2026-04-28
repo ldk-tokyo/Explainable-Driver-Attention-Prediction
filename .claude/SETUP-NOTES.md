@@ -109,3 +109,54 @@ v2 的 `interpretability-analysis` 和 `paper-writing` 都提到"可视化",触�
 - **换投稿目标**: 告诉 Claude 会议名,matplotlib 配置会微调
 - **加一张卡 (data-parallel)**: 要求"补 data-parallel 的 train-eval-workflow"
 - **想做时序扩展**: 读 `modify-llada/references/patterns/pattern-CDE-combined.md` (Pattern D)
+
+---
+
+## Project Status as of 2026-04-28
+
+**进度**: baseline 锚点已建立, 即将进入 Phase 1 (decoder 改造主线), 准备阶段未开始改代码。
+
+### 已完成
+
+- **baseline-5090 训练**: 10 epoch, 5000 step, RTX 5090 单卡 ~5h25m, ckpt `ckpts/ATTN-7B-baseline-5090/`
+- **Phase 1.5 完整 eval (4 子集)**: BDDA / DReyeVE / LBW / DADA 全部跑完 6 attn + 12 text 指标。详细数字 + 与论文 Table 1/2 对比见 [experiments.md](../experiments.md)。
+- **Q3 解决**: 论文 Table 2 的 "BLEU" = **BLEU-1** (不是 BLEU-4)。证据: BDDA 0.405 vs 论文 0.444 (-0.039), DADA 0.391 vs 0.376 (+0.015), 量级吻合; BLEU-4 量级完全不对 (-0.15 ~ -0.27)。
+- **main 分支锚点**: `0ef61b4` (上游 W3DA truncation bug fix + TB layout) + `23ec3b3` (Claude Code context + experiments anchor)
+- **B1 实施草案**: [plans/B1-implementation-plan.md](../plans/B1-implementation-plan.md) (CPU-only, 等用户 review, 还没改代码)
+
+### 下一步
+
+Phase 1 B1 deeper cross-attention decoder 实验 (草案见 [plans/B1-implementation-plan.md](../plans/B1-implementation-plan.md))。
+- 推荐方案 B1c: 加 `--decoder_type / --decoder_depth` CLI + 轻量 dispatch 钩子, ~30 行改动 4 处文件, 不重构 `model/decoders/`
+- 等用户 review 草案 → 说"按草案改" → `git checkout -b decoder/B1-cross-depth4` → 实施。
+
+### 已建立的硬规则 (CLAUDE.md 已固化)
+
+1. **GPU 命令必须等 user 明确说"跑"才执行**, 启动后立即声明 PID
+2. **NEVER update git config** (用户已设 `ldk950413 <ldk110714@gmail.com>`)
+3. **不写 /tmp 调度脚本** (历史教训: dd3d2295 session 写过 `/tmp/launch_eval.sh` for 循环, 已禁用为 `.disabled`)
+4. **改 model code 前必须 git checkout -b**, 每步小 commit + smoke test 通过才进全量训练
+
+### Open Questions (在 [experiments.md](../experiments.md), 不堵 Phase 1)
+
+- **Q1** NSS NaN: BDDA 76.6% 样本 NSS=NaN (gazemap < 0.7 阈值二值化全 0), 上游代码同样行为, 论文 supp 无说明 → LaTeX 表加 dagger 注脚
+- **Q2** 训练总 step 数: 论文未公布
+- **Q3** ✅ BLEU = BLEU-1 已确认
+- **Q4** DReyeVE BLEU-1 反超 (我们 0.518 vs 论文 0.436, +0.074): 推测 `train_sample_rates=8,5,2,7` 让 DReyeVE 训练欠权重, test 时反而擅长。Phase 1 后可单独跑 sample_rate 消融
+- **Q5** CIDEr-R Normal 巨差 (我们 0.463 vs 论文 0.963): 待核对论文报的是 CIDEr 还是 CIDEr-R
+
+### 工程债 (Phase 1 完成后处理)
+
+- **磁盘 466 GB → 可清 154 GB**: 4 个中间 epoch ckpt (epoch 2/3/4/6, 各 30 GB = 120 GB) + 8 个 dataset zip (34 GB)
+- **log_test.txt Cider 字段 bug**: train_ds.py print 把 Cider 字段写成 CiderR 值 (eval log stdout 是真实值, collect script 不受影响), 修一行打印代码
+
+### 复现 Phase 1.5 evaluation (CPU 命令)
+
+```bash
+PATH="$PWD/.venv/bin:$PATH" .venv/bin/python3.11 \
+  scripts/paper/collect_main_results.py \
+  --exps "baseline-5090=Baseline (ours repro)" \
+  --out figures/tab1_main_results --per-dataset
+```
+产 [figures/tab1_main_results/per_dataset_transposed_baseline-5090.tex](../figures/tab1_main_results/per_dataset_transposed_baseline-5090.tex), 4 DS × 10 metric 全满。
+
