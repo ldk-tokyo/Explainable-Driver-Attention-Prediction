@@ -118,6 +118,30 @@ def main(args):
     if args.local_rank == 0:
         os.makedirs(args.log_dir, exist_ok=True)
         writer = SummaryWriter(args.log_dir)
+        writer.add_custom_scalars({
+            "Training Loss": {
+                "Train (per step)": ["Multiline", ["train/loss", "train/ce_loss",
+                                                    "train/ce_what_losses", "train/ce_why_losses",
+                                                    "train/attn_loss"]],
+                "Val (per epoch)":   ["Multiline", ["val/loss", "val/attn_loss",
+                                                    "val/text_loss", "val/what_loss",
+                                                    "val/why_loss"]],
+            },
+            "Attn Metrics": {
+                "Higher is better": ["Multiline", ["val/cc", "val/sim", "val/nss",
+                                                    "val/auc_b", "val/auc_j"]],
+                "Lower is better":  ["Multiline", ["val/kld"]],
+            },
+            "Text Metrics": {
+                "BLEU-4 / METEOR / ROUGE": ["Multiline", ["val/bleu_4", "val/meteor", "val/rouge"]],
+                "CIDEr (D vs R)":          ["Multiline", ["val/cider", "val/ciderR"]],
+            },
+            "System": {
+                "LR":         ["Multiline", ["train/lr"]],
+                "Throughput": ["Multiline", ["metrics/total_secs_per_batch",
+                                              "metrics/data_secs_per_batch"]],
+            },
+        })
     else:
         writer = None
 

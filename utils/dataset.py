@@ -7,7 +7,6 @@ import cv2
 import numpy as np
 import torch
 import torch.nn.functional as F
-from jedi.api.helpers import infer
 from pycocotools import mask
 from transformers import CLIPImageProcessor
 
@@ -158,6 +157,8 @@ def collate_fn(
         if input_ids.shape[1] > truncate_len:
             input_ids = input_ids[:, :truncate_len]
             targets = targets[:, :truncate_len]
+            targets_what = targets_what[:, :truncate_len]
+            targets_why = targets_why[:, :truncate_len]
             attention_masks = attention_masks[:, :truncate_len]
 
     return {
