@@ -102,3 +102,21 @@ deepspeed --num_gpus=1 --master_port=26000 train_ds.py \
 可以自主执行。
 
 注: 这条规则跨会话稳定,新会话开头读 CLAUDE.md 时即应内化。
+
+## Big-Operation Surface Rule
+
+Claude Code 在启动以下任一类型操作前, 必须先在回复里说明计划并
+等用户确认后再执行 (不需要等 "跑 X" 那种正式授权, 但要 surface):
+
+- 解压 / 下载 / 复制 > 50 GB 数据
+- 创建新 plans/ 或 paper*/ 顶级文档 (~3+ KB markdown)
+- 修改 .gitignore (除非是 hygiene 修复明显在用户 explicit 指令范围内)
+
+反例 (越界): 用户说 "解压 BDDA 检查",
+Claude Code 不该自主创建 plans/bdda-extract-inspection.md。
+
+正例: 用户说 "解压 BDDA 检查",
+Claude Code 应该先解压 (在 explicit 指令范围内),
+inspection 报告先 inline 给用户, 用户说 "存到文件" 才创建 markdown。
+
+小操作 (改已有 markdown / git status / ls / 看 log) 不需要 surface。
