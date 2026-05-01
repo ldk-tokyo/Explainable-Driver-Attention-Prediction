@@ -414,9 +414,9 @@ def main(args):
 
         log_text = f"{config_text}The evaluation result: \n"
         log_text += f"Attn metrics:\nCC: {cc:.6f}, KLD: {kld:.6f}, SIM: {sim:.6f}, NSS: {nss:.6f}, AUC_B: {auc_b:.6f}, AUC_J: {auc_j:.6f}\n"
-        log_text += f"Text metrics (Complete):\nBleu_4: {bleu[3]:.6f}, Bleu_3: {bleu[2]:.6f}, Bleu_2: {bleu[1]:.6f}, Bleu_1: {bleu[0]:.6f}, Meteor: {meteor:.6f}, Rouge: {rouge:.6f}, Cider: {ciderR:.6f}, CiderR: {ciderR:.6f}\n"
-        log_text += f"Text metrics (What part):\nBleu_4: {bleu_wt[3]:.6f}, Bleu_3: {bleu_wt[2]:.6f}, Bleu_2: {bleu_wt[1]:.6f}, Bleu_1: {bleu_wt[0]:.6f}, Meteor: {meteor_wt:.6f}, Rouge: {rouge_wt:.6f}, Cider: {ciderR_wt:.6f}, CiderR: {ciderR_wt:.6f}\n"
-        log_text += f"Text metrics (Why part):\nBleu_4: {bleu_wy[3]:.6f}, Bleu_3: {bleu_wy[2]:.6f}, Bleu_2: {bleu_wy[1]:.6f}, Bleu_1: {bleu_wy[0]:.6f}, Meteor: {meteor_wy:.6f}, Rouge: {rouge_wy:.6f}, Cider: {ciderR_wy:.6f}, CiderR: {ciderR_wy:.6f}"
+        log_text += f"Text metrics (Complete):\nBleu_4: {bleu[3]:.6f}, Bleu_3: {bleu[2]:.6f}, Bleu_2: {bleu[1]:.6f}, Bleu_1: {bleu[0]:.6f}, Meteor: {meteor:.6f}, Rouge: {rouge:.6f}, Cider: {cider:.6f}, CiderR: {ciderR:.6f}\n"
+        log_text += f"Text metrics (What part):\nBleu_4: {bleu_wt[3]:.6f}, Bleu_3: {bleu_wt[2]:.6f}, Bleu_2: {bleu_wt[1]:.6f}, Bleu_1: {bleu_wt[0]:.6f}, Meteor: {meteor_wt:.6f}, Rouge: {rouge_wt:.6f}, Cider: {cider_wt:.6f}, CiderR: {ciderR_wt:.6f}\n"
+        log_text += f"Text metrics (Why part):\nBleu_4: {bleu_wy[3]:.6f}, Bleu_3: {bleu_wy[2]:.6f}, Bleu_2: {bleu_wy[1]:.6f}, Bleu_1: {bleu_wy[0]:.6f}, Meteor: {meteor_wy:.6f}, Rouge: {rouge_wy:.6f}, Cider: {cider_wy:.6f}, CiderR: {ciderR_wy:.6f}"
         save_path = os.path.join(args.log_dir, "log_test.txt")
         with open(save_path, "w") as f:
             f.write(log_text)

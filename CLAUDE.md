@@ -17,7 +17,7 @@
 | PyTorch | **≥ 2.5** (需要 sm_120 支持) |
 | DeepSpeed | ≥ 0.15 |
 | 精度 | **bf16 训练**,禁用 fp16,禁用 `replace_with_kernel_inject` |
-| Effective batch | 推荐 `batch=1, grad_accum=16` → 16(原论文是 80) |
+| Effective batch | 推荐 `batch=1, grad_accum=16` → 16(原论文 4×A100 × batch_8 × accum_5 = 160,差 10×) |
 
 验证安装:
 ```bash
