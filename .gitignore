@@ -8,6 +8,12 @@ runs_smoke/
 ckpts/
 weights/
 dataset/
+dataset_raw/
+
+# Compressed dataset archives (downloaded, re-fetchable from upstream)
+*.tar
+*.tar.gz
+*.zip
 
 # Generated reports (re-generatable)
 reports/
