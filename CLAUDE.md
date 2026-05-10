@@ -120,3 +120,20 @@ Claude Code 应该先解压 (在 explicit 指令范围内),
 inspection 报告先 inline 给用户, 用户说 "存到文件" 才创建 markdown。
 
 小操作 (改已有 markdown / git status / ls / 看 log) 不需要 surface。
+
+## Branch Push Rule (paper-confidentiality)
+
+origin = public GitHub repo (Explainable-Driver-Attention-Prediction).
+private = private GitHub repo for paper-1/2 backup.
+
+Branch push policy:
+- main: push to origin (public anchor) AND private (mirror).
+- paper1/failure-analysis: ONLY push to private (paper 1 投稿前禁止 public).
+- decoder/B1-cross-depth4: ONLY push to private (Paper 2 prep).
+- Future paper2/* branches: ONLY push to private.
+
+Claude Code 不擅自 push 任何 branch. 用户必须明确说
+"push 到 origin <branch>" 或 "push 到 private <branch>" 才执行.
+默认 git push (无 remote arg) 是错误, 必须显式 remote name.
+
+如果用户说 "push" 无 remote arg, surface 反问哪个 remote 不擅自决定.
